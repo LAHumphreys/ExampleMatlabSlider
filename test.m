@@ -40,9 +40,7 @@ end
 function winH = drawPickerWindow(fig)
     clf(fig);
     winH = addSlider(fig);
-    set (fig, 
-        "sizechangedfcn", makeSliderUpdateFn(fig, winH)
-    );
+    addlistener(fig, "position", makeSliderUpdateFn(fig, winH));
 end
 
 function winHandle = addSlider(fig)
