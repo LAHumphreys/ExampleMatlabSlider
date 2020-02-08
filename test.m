@@ -5,12 +5,12 @@
 %                  Constants               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function width = DatWidth()
-   width = 30;
+function width = DataWidth()
+   width = 300;
 end
 
 function height = DataHeight()
-   height = 20;
+   height = 200;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,30 +37,38 @@ end
 %               Slice Picker               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function winH = drawPickerWindow(fig)
+function winH = drawPickerWindow(fig, graphFn)
     clf(fig);
-    winH = addSlider(fig);
-    addlistener(fig, "position", makeSliderUpdateFn(fig, winH));
+    winH = addSlider(fig, graphFn);
+
+    % re-centre the slider when the image is re-sized
+    addlistener(fig, "position", @() redrawSlider(fig, winH));
+
+    % When the slider is moved, trigger a re-draw
+    triggerGraph(winH, graphFn);
+    addlistener(winH, "value", @() triggerGraph(winH, graphFn));
 end
 
-function winHandle = addSlider(fig)
+function winHandle = addSlider(fig, graphFn)
    winHandle = uicontrol(
        fig,
-       "style",    "slider",
-       "position", [0, 10, 400 20],
-       "value",    5,
-       "min",      1,
-       "max",      10
+       "style",      "slider",
+       "position",   [0, 10, 400 20],
+       "value",      5,
+       "sliderstep", [1/DataWidth(), 0.2],
+       "min",        1,
+       "max",        DataWidth()+1
    );
    HCentreControl(fig, winHandle)
 end
 
-function redrawSlider(fig, winH)
-    HCentreControl(fig, winH)
+function triggerGraph(winH, graphFn)
+    val = get(winH, "value");
+    graphFn(round(val));
 end
 
-function fn = makeSliderUpdateFn(fig, winH)
-   fn = @() redrawSlider(fig, winH);
+function redrawSlider(fig, winH)
+    HCentreControl(fig, winH)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,11 +80,16 @@ function slice = newSlice(x,y)
 end
 
 function result = makeImage(p)
-    image = newSlice(DatWidth(), DataHeight());
-    for i = p:DataHeight()
-        image(i,:) += 1;
+    image = newSlice(DataWidth(), DataHeight());
+    for i = p:DataWidth()
+        image(:,i) += 1;
     end
     result = image;
+end
+
+function drawSlice(idx)
+    image = makeImage(idx);
+    imagesc(image);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,9 +98,7 @@ end
 
 
 fig = figure(3);
-picker = drawPickerWindow(fig);
+picker = drawPickerWindow(fig, @(val) drawSlice(val));
 
-image = makeImage(5);
-imagesc(image);
 
 
