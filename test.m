@@ -3,8 +3,8 @@ function test()
     %               Main Function              %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fig = figure(3);
-    picker = slicePicker()
-    runPicker(picker, fig, @(val) drawSlice(val));
+    picker = SliceChooser(DataWidth(), DataHeight(), @(val) drawSlice(val));
+    runPicker(picker, fig);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                  Constants               %
