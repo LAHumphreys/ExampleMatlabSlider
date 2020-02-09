@@ -1,14 +1,12 @@
 classdef SliceChooser
     properties
-        width = 300;
-        height = 200;
+        numOptions = 300;
         graphFn;
     end
 
     methods (Access = public)
-        function p = SliceChooser(width, height, graphFn)
-            p.width = width;
-            p.height = height;
+        function p = SliceChooser(numOptions, graphFn)
+            p.numOptions = numOptions;
             p.graphFn = graphFn;
         end
 
@@ -41,9 +39,9 @@ classdef SliceChooser
                "style",      "slider",
                "position",   [0, 10, 400 20],
                "value",      5,
-               "sliderstep", [1/p.width, 0.2],
+               "sliderstep", [1/p.numOptions, 0.2],
                "min",        1,
-               "max",        p.width+1
+               "max",        p.numOptions+1
            );
            redrawPicker(p, fig, winHandle);
         end
