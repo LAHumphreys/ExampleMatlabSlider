@@ -5,8 +5,9 @@ function test()
     fig = figure(3);
     numUserOptions = DataWidth();
     drawSliceFn = @(val) drawSlice(val);
+    onDoneFn = @(val) processSlice(val);
 
-    picker = SliceChooser(numUserOptions, drawSliceFn);
+    picker = SliceChooser(numUserOptions, drawSliceFn, onDoneFn);
     runPicker(picker, fig);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -40,6 +41,14 @@ function test()
     function drawSlice(idx)
         image = makeImage(idx);
         imagesc(image);
+    end
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %               Handle Selection           %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    function processSlice(slice)
+       disp("The user selected slice: ");
+       disp(slice);
     end
 
 end
